@@ -26,7 +26,13 @@ const ClientDetailsForm = () => {
   const form = useForm<z.infer<typeof clientDetailsFormSchema>>({
     resolver: zodResolver(clientDetailsFormSchema),
     defaultValues: {
-      // email: "",
+      fullName: '',
+      githubHandle: '',
+      weeklyCost: "",
+      twitterHandle: '',
+      sherlockHandle: '',
+      codeArenaHandle: '',
+      inviteCode: '',
     },
   })
 
@@ -97,6 +103,7 @@ const ClientDetailsForm = () => {
                     <FormControl>
                       <Input
                         type='number'
+                        min={1}
                         className='w-[390px]'
                         placeholder="500"
                         {...field} />

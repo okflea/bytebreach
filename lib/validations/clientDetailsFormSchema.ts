@@ -7,11 +7,10 @@ const clientDetailsFormSchema = z.object({
   githubHandle: z.string().nonempty({
     message: "Github handle is required",
   }),
-  weeklyCost: z.string({
-    required_error: "Weekly cost is required",
-  }).min(1, {
-    message: "Valid Weekly cost is required",
+  weeklyCost: z.string().nonempty({
+    message: "Weekly cost is required",
   }),
+
   twitterHandle: z.string().optional(),
   sherlockHandle: z.string().optional(),
   codeArenaHandle: z.string().optional(),
