@@ -16,9 +16,15 @@ import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import { Button } from './ui/button'
 import { Separator } from './ui/separator'
+import clientLoginFormSchema from '@/lib/validations/clientLoginFormSchema'
 
 const ClientLoginForm = ({ login }: { login: () => Promise<void> }) => {
-
+  const form = useForm<z.infer<typeof clientLoginFormSchema>>({
+    resolver: zodResolver(clientLoginFormSchema),
+    defaultValues: {
+      email: "",
+    },
+  })
   return (
     <>
       <Button
