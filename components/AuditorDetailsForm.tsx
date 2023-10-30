@@ -1,3 +1,4 @@
+
 "use client"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -17,24 +18,25 @@ import { Separator } from './ui/separator'
 import { ScrollArea } from './ui/scroll-area'
 import { useRouter } from "next/navigation"
 import { web3auth } from "@/lib/web3AuthInit"
-import clientDetailsFormSchema from "@/lib/validations/auditorDetailsFormSchema"
+import auditorDetailsFormSchema from "@/lib/validations/clientDetailsFormSchema"
 
-const ClientDetailsForm = () => {
+const AuditorDetailsForm = () => {
 
   const router = useRouter()
-  const form = useForm<z.infer<typeof clientDetailsFormSchema>>({
-    resolver: zodResolver(clientDetailsFormSchema),
+  const form = useForm<z.infer<typeof auditorDetailsFormSchema>>({
+    resolver: zodResolver(auditorDetailsFormSchema),
     defaultValues: {
-      fullName: "",
-      companyName: "",
-      website: "",
-      twitterHandle: "",
-      githubHandle: "",
-      inviteCode: "",
+      fullName: '',
+      githubHandle: '',
+      weeklyCost: "",
+      twitterHandle: '',
+      sherlockHandle: '',
+      codeArenaHandle: '',
+      inviteCode: '',
     },
   })
 
-  async function onSubmit(data: z.infer<typeof clientDetailsFormSchema>) {
+  async function onSubmit(data: z.infer<typeof auditorDetailsFormSchema>) {
     toast({
       title: "Successful",
       description: "details submitted",
@@ -52,7 +54,6 @@ const ClientDetailsForm = () => {
     <>
       <ScrollArea className="max-h-screen w-[400px]">
         <div className='flex flex-col'>
-
           <p>Contact Details</p>
           <p className='text-slate-400 text-sm mt-2'>Enter your details to Login</p>
           <Separator className="my-6" />
@@ -78,14 +79,14 @@ const ClientDetailsForm = () => {
 
               <FormField
                 control={form.control}
-                name="companyName"
+                name="githubHandle"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Company Name</FormLabel>
+                    <FormLabel>Github Handle</FormLabel>
                     <FormControl>
                       <Input
                         className='w-[390px]'
-                        placeholder="John Doe"
+                        placeholder="JohnDoe"
                         {...field} />
                     </FormControl>
                     <FormMessage />
@@ -95,10 +96,29 @@ const ClientDetailsForm = () => {
 
               <FormField
                 control={form.control}
-                name="website"
+                name="weeklyCost"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Website</FormLabel>
+                    <FormLabel>Weekly Cost(INR)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='number'
+                        min={1}
+                        className='w-[390px]'
+                        placeholder="500"
+                        {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="twitterHandle"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Twitter Handle</FormLabel>
                     <FormControl>
                       <Input
                         className='w-[390px]'
@@ -114,10 +134,27 @@ const ClientDetailsForm = () => {
 
                 <FormField
                   control={form.control}
-                  name="twitterHandle"
+                  name="sherlockHandle"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Twitter Handle</FormLabel>
+                      <FormLabel>Sherlock Handle</FormLabel>
+                      <FormControl>
+                        <Input
+                          className='w-[190px] mr-2 '
+                          placeholder="JohnDoe"
+                          {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="codeArenaHandle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>CodeArena Handle</FormLabel>
                       <FormControl>
                         <Input
                           className='w-[190px]'
@@ -128,25 +165,9 @@ const ClientDetailsForm = () => {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="githubHandle"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Github Handle</FormLabel>
-                      <FormControl>
-                        <Input
-                          className='w-[190px] ml-2'
-                          placeholder="JohnDoe"
-                          {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </div>
+              <Separator className="mt-2" />
 
-              <Separator />
               <FormField
                 control={form.control}
                 name="inviteCode"
@@ -176,4 +197,4 @@ const ClientDetailsForm = () => {
     </>
   )
 }
-export default ClientDetailsForm
+export default AuditorDetailsForm
