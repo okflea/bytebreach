@@ -18,7 +18,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={dm.className}>
-        {children}
+        <main className='bg'>
+          {children}
+        </main>
         <Toaster />
       </body>
     </html>

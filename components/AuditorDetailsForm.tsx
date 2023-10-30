@@ -17,6 +17,7 @@ import { Separator } from './ui/separator'
 import { ScrollArea } from './ui/scroll-area'
 import { useRouter } from "next/navigation"
 import auditorDetailsFormSchema from "@/lib/validations/auditorDetailsFormSchema"
+import { web3auth } from "@/lib/web3AuthInit"
 
 const AuditorDetailsForm = () => {
 
@@ -28,13 +29,18 @@ const AuditorDetailsForm = () => {
     },
   })
 
-  function onSubmit(data: z.infer<typeof auditorDetailsFormSchema>) {
+  async function onSubmit(data: z.infer<typeof auditorDetailsFormSchema>) {
     toast({
       title: "Successful",
       description: "details submitted",
       duration: 3000,
     })
-    //login & redirect
+    //save email & redirect
+    const userDetails = await web3auth.getUserInfo()
+    const userEmails = JSON.parse(localStorage.getItem('userEmails') || "[]")
+    localStorage.setItem(
+      'userEmails', JSON.stringify([...userEmails, userDetails.email || ""])
+    )
     router.push('/dashboard')
   }
   return (
@@ -64,8 +70,6 @@ const AuditorDetailsForm = () => {
                   </FormItem>
                 )}
               />
-
-
 
               <FormField
                 control={form.control}

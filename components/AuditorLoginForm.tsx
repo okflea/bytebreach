@@ -77,7 +77,7 @@ const AuditorLoginForm = ({ loginGoogle, loginGithub, loginWallet }:
 
       <Separator />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className=" space-y-6">
           <FormField
             control={form.control}
             name="email"
@@ -94,7 +94,7 @@ const AuditorLoginForm = ({ loginGoogle, loginGithub, loginWallet }:
               </FormItem>
             )}
           />
-          <div className='flex justify-center'>
+          <div className='w-full flex justify-center'>
             <Button
               className='w-1/3'
               type="submit">Submit</Button>

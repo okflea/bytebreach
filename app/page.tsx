@@ -1,8 +1,6 @@
 "use client";
 
-import { web3auth } from "@/lib/web3AuthInit";
 import { useEffect, useState } from "react";
-import { IProvider, WALLET_ADAPTERS } from "@web3auth/base";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ClientLoginForm from "@/components/ClientLoginForm";
@@ -11,6 +9,11 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import ClientDetailsForm from "@/components/ClientDetailsForm";
 import AuditorDetailsForm from "@/components/AuditorDetailsForm";
+
+import { CHAIN_NAMESPACES, IProvider, WALLET_ADAPTERS } from "@web3auth/base";
+import { web3auth } from "@/lib/web3AuthInit";
+
+
 
 function App() {
   const [provider, setProvider] = useState<IProvider | null>(null);
@@ -28,8 +31,14 @@ function App() {
         const storedEmails = localStorage.getItem('userEmails');
         if (storedEmails) {
           setUserEmails(JSON.parse(storedEmails));
+        } else {
+          localStorage.setItem('userEmails', JSON.stringify([]))
         }
-        await web3auth.init();
+        console.log(web3auth);
+        if (web3auth.status === "not_ready") {
+          await web3auth.init();
+        }
+        // await web3auth.init();
         setProvider(web3auth.provider);
         if (web3auth.connected) {
           router.push('/dashboard')
