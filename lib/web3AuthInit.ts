@@ -18,7 +18,7 @@ const chainConfig = {
 export const web3auth = new Web3AuthNoModal({
   clientId,
   chainConfig,
-  web3AuthNetwork: "sapphire_mainnet",
+  web3AuthNetwork: "mainnet",
 });
 
 const privateKeyProvider = new EthereumPrivateKeyProvider({ config: { chainConfig } });
