@@ -1,6 +1,6 @@
 import * as z from "zod"
 
-const auditorDetailsFormSchema = z.object({
+const clientDetailsFormSchema = z.object({
   fullName: z.string().nonempty({
     message: "Full name is required",
   }),
@@ -14,4 +14,4 @@ const auditorDetailsFormSchema = z.object({
     message: "Invite code is required",
   }),
 })
-export default auditorDetailsFormSchema
+export default clientDetailsFormSchema

@@ -16,20 +16,25 @@ import { Button } from './ui/button'
 import { Separator } from './ui/separator'
 import { ScrollArea } from './ui/scroll-area'
 import { useRouter } from "next/navigation"
-import auditorDetailsFormSchema from "@/lib/validations/auditorDetailsFormSchema"
 import { web3auth } from "@/lib/web3AuthInit"
+import clientDetailsFormSchema from "@/lib/validations/auditorDetailsFormSchema"
 
-const AuditorDetailsForm = () => {
+const ClientDetailsForm = () => {
 
   const router = useRouter()
-  const form = useForm<z.infer<typeof auditorDetailsFormSchema>>({
-    resolver: zodResolver(auditorDetailsFormSchema),
+  const form = useForm<z.infer<typeof clientDetailsFormSchema>>({
+    resolver: zodResolver(clientDetailsFormSchema),
     defaultValues: {
-      // email: "",
+      fullName: "",
+      companyName: "",
+      website: "",
+      twitterHandle: "",
+      githubHandle: "",
+      inviteCode: "",
     },
   })
 
-  async function onSubmit(data: z.infer<typeof auditorDetailsFormSchema>) {
+  async function onSubmit(data: z.infer<typeof clientDetailsFormSchema>) {
     toast({
       title: "Successful",
       description: "details submitted",
@@ -171,4 +176,4 @@ const AuditorDetailsForm = () => {
     </>
   )
 }
-export default AuditorDetailsForm
+export default ClientDetailsForm
