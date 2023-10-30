@@ -1,28 +1,38 @@
 "use client";
 
-import web3auth from "@/lib/web3AuthInit";
+import { web3auth } from "@/lib/web3AuthInit";
 import { useEffect, useState } from "react";
-// import { Web3AuthNoModal } from "@web3auth/no-modal";
 import { IProvider, WALLET_ADAPTERS } from "@web3auth/base";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Image from "next/image";
-import { Separator } from "@/components/ui/separator";
 import ClientLoginForm from "@/components/ClientLoginForm";
+import AuditorLoginForm from "@/components/AuditorLoginForm";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
+import ClientDetailsForm from "@/components/ClientDetailsForm";
+import AuditorDetailsForm from "@/components/AuditorDetailsForm";
 
 function App() {
   const [provider, setProvider] = useState<IProvider | null>(null);
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [userEmails, setUserEmails] = useState<string[]>([]);
+  const [clientContactDetails, setClientContactDetails] = useState<boolean>(false);
+  const [auditorContactDetails, setAuditorContactDetails] = useState<boolean>(false);
+
+  const router = useRouter()
+  const { toast } = useToast()
 
   useEffect(() => {
     const init = async () => {
       try {
+
+        const storedEmails = localStorage.getItem('userEmails');
+        if (storedEmails) {
+          setUserEmails(JSON.parse(storedEmails));
+        }
         await web3auth.init();
         setProvider(web3auth.provider);
-
         if (web3auth.connected) {
-          setLoggedIn(true);
+          router.push('/dashboard')
         }
       } catch (error) {
         console.error(error);
@@ -31,6 +41,37 @@ function App() {
     init();
   }, []);
 
+
+  const loginGoogleClient = async () => {
+    const web3authProvider = await web3auth.connectTo(
+      WALLET_ADAPTERS.OPENLOGIN,
+      {
+        loginProvider: "google",
+      }
+    );
+    setProvider(web3authProvider);
+    if (web3auth.connected) {
+      const user = await web3auth.getUserInfo();
+      if (userEmails.includes(user.email || "")) {
+        toast({
+          title: "Successfully logged in",
+          duration: 3000,
+        })
+        router.push('/dashboard')
+      } else {
+        //new form 
+        // localStorage.setItem(
+        //   'userEmails', JSON.stringify([...userEmails, user.email || ""])
+        // )
+        setClientContactDetails(true)
+        toast({
+          title: "Successfully logged in",
+          description: "Please fill in details since this is your first time",
+          duration: 3000,
+        })
+      }
+    }
+  };
 
   const loginGoogle = async () => {
     const web3authProvider = await web3auth.connectTo(
@@ -41,7 +82,26 @@ function App() {
     );
     setProvider(web3authProvider);
     if (web3auth.connected) {
-      setLoggedIn(true);
+      const user = await web3auth.getUserInfo();
+      if (userEmails.includes(user.email || "")) {
+        toast({
+          title: "Successfully logged in",
+          duration: 3000,
+        })
+        router.push('/dashboard')
+      }
+      else {
+        //new form 
+        // localStorage.setItem(
+        //   'userEmails', JSON.stringify([...userEmails, user.email || ""])
+        // )
+        setAuditorContactDetails(true)
+        toast({
+          title: "Successfully logged in",
+          description: "Please fill in details since this is your first time",
+          duration: 3000,
+        })
+      }
     }
   };
 
@@ -55,92 +115,77 @@ function App() {
     );
     setProvider(web3authProvider);
     if (web3auth.connected) {
-      setLoggedIn(true);
+      const user = await web3auth.getUserInfo();
+      if (userEmails.includes(user.email || "")) {
+        toast({
+          title: "Successfully logged in",
+          duration: 3000,
+        })
+        router.push('/dashboard')
+      }
+      else {
+        //new form 
+        // localStorage.setItem(
+        //   'userEmails', JSON.stringify([...userEmails, user.email || ""])
+        // )
+        setAuditorContactDetails(true)
+        toast({
+          title: "Successfully logged in",
+          description: "Please fill in details since this is your first time",
+          duration: 3000,
+        })
+      }
     }
   };
 
-
-  const getUserInfo = async () => {
-    const user = await web3auth.getUserInfo();
-    uiConsole(user);
-  };
-
-  const logout = async () => {
-    await web3auth.logout();
-    setProvider(null);
-    setLoggedIn(false);
-    uiConsole("logged out");
-  };
-
-
-  function uiConsole(...args: any[]): void {
-    const el = document.querySelector("#console>p");
-    if (el) {
-      el.innerHTML = JSON.stringify(args || {}, null, 2);
-      console.log(...args);
+  const loginWallet = async () => {
+    const web3authProvider = await web3auth.connectTo(
+      WALLET_ADAPTERS.WALLET_CONNECT_V2,
+      {
+        loginProvider: "walletConnect",
+      }
+    );
+    setProvider(web3authProvider);
+    if (web3auth.connected) {
+      router.push('/dashboard')
     }
   }
 
-  const loggedInView = (
-    <>
-      <div className="flex">
-        <div>
-          <Button onClick={getUserInfo} >
-            Get User Info
-          </Button>
-        </div>
-        <div>
-          <Button onClick={logout} >
-            Log Out
-          </Button>
-        </div>
-      </div>
-    </>
-  );
-
-  const unloggedInView = (
-    <div className="flex">
-      <Button onClick={loginGoogle}>
-        Login with google
-      </Button>
-
-      <Button onClick={loginGithub}>
-        Login with github
-      </Button>
-    </div>
-  );
-
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center">
-      <h1 className="title">
-        <a target="_blank" href="https://web3auth.io/docs/sdk/pnp/web/no-modal" rel="noreferrer">
-          Web3Auth{" "}
-        </a>
-      </h1>
 
-      <div className="grid">{loggedIn ? loggedInView : unloggedInView}</div>
-      <div id="console" style={{ whiteSpace: "pre-line" }}>
-        <p style={{ whiteSpace: "pre-line" }}></p>
-      </div>
+      <Card className="w-[440px] rounded-lg flex justify-center p-5">
+        {
+          (!clientContactDetails && !auditorContactDetails) &&
+          (
+            <Tabs defaultValue="Client" className="w-[400px] ">
+              <TabsList className="grid grid-cols-2">
+                <TabsTrigger value="Client">Client</TabsTrigger>
+                <TabsTrigger value="Auditor">Auditor</TabsTrigger>
+              </TabsList>
+              <TabsContent
+                value="Client"
+                className="justify-center mt-10 mx-2 space-y-5"
+              >
+                <ClientLoginForm login={loginGoogleClient} />
 
-      <Card className="w-[420px] rounded-lg flex justify-center p-4">
-        <Tabs defaultValue="Client" className="w-[400px] ">
-          <TabsList className="grid grid-cols-2">
-            <TabsTrigger value="Client">Client</TabsTrigger>
-            <TabsTrigger value="Auditor">Auditor</TabsTrigger>
-          </TabsList>
-          <TabsContent
-            value="Client"
-            className="flex flex-col justify-center my-5 space-y-5"
-          >
-            <ClientLoginForm login={loginGoogle} />
+              </TabsContent>
+              <TabsContent
+                value="Auditor"
+                className=" justify-center mt-10 space-y-5"
+              >
+                <AuditorLoginForm
+                  loginGoogle={loginGoogle}
+                  loginGithub={loginGithub}
+                  loginWallet={loginWallet}
+                />
 
-
-          </TabsContent>
-          <TabsContent value="Auditor">
-            <p>Auditor</p>
-          </TabsContent>
-        </Tabs>
+              </TabsContent>
+            </Tabs>
+          )
+        }
+        {clientContactDetails && (<ClientDetailsForm />)}
+        {auditorContactDetails && (<AuditorDetailsForm />)}
       </Card>
     </div>
   );

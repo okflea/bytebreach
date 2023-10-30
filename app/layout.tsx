@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { DM_Sans } from 'next/font/google'
 import './globals.css'
+import { Toaster } from '@/components/ui/toaster'
 
 const dm = DM_Sans({ weight: '500', subsets: ['latin'] })
 
@@ -16,7 +17,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={dm.className}>{children}</body>
+      <body className={dm.className}>
+        {children}
+        <Toaster />
+      </body>
     </html>
   )
 }

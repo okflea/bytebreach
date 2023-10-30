@@ -1,3 +1,4 @@
+
 "use client"
 import Image from 'next/image'
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -17,7 +18,12 @@ import { Button } from './ui/button'
 import { Separator } from './ui/separator'
 import clientLoginFormSchema from '@/lib/validations/clientLoginFormSchema'
 
-const ClientLoginForm = ({ login }: { login: () => Promise<void> }) => {
+const AuditorLoginForm = ({ loginGoogle, loginGithub, loginWallet }:
+  {
+    loginGoogle: () => Promise<void>,
+    loginGithub: () => Promise<void>
+    loginWallet: () => Promise<void>
+  }) => {
 
   const form = useForm<z.infer<typeof clientLoginFormSchema>>({
     resolver: zodResolver(clientLoginFormSchema),
@@ -30,11 +36,6 @@ const ClientLoginForm = ({ login }: { login: () => Promise<void> }) => {
     toast({
       title: "Successfully logged in",
       duration: 3000,
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-green-500 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      )
     })
     //login & redirect
   }
@@ -43,14 +44,37 @@ const ClientLoginForm = ({ login }: { login: () => Promise<void> }) => {
     <>
       <Button
         variant="outline"
-        onClick={login}
+        onClick={loginGoogle}
         className="w-full p-2"
       >
         <Image src="/google-icon-2048x2048.png" alt="google" width={20} height={20} />
-        <p className="ml-5">
+        <p className="ml-7">
           Login using your Google Account
         </p>
       </Button>
+
+      <Button
+        variant="outline"
+        onClick={loginGithub}
+        className="w-full p-2"
+      >
+        <Image src="/github-icon.png" alt="github" width={25} height={25} />
+        <p className="ml-7">
+          Login using your Github Account
+        </p>
+      </Button>
+
+      {/* <Button */}
+      {/*   variant="outline" */}
+      {/*   onClick={loginWallet} */}
+      {/*   className="w-full p-2" */}
+      {/* > */}
+      {/*   <Image src="/github-icon.png" alt="github" width={25} height={25} /> */}
+      {/*   <p className="ml-7"> */}
+      {/*     Login using your Wallet */}
+      {/*   </p> */}
+      {/* </Button> */}
+
       <Separator />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
@@ -70,12 +94,16 @@ const ClientLoginForm = ({ login }: { login: () => Promise<void> }) => {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <div className='flex justify-center'>
+            <Button
+              className='w-1/3'
+              type="submit">Submit</Button>
+          </div>
         </form>
       </Form>
     </>
   )
 }
 
-export default ClientLoginForm
+export default AuditorLoginForm
 
